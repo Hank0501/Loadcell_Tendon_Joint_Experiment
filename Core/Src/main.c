@@ -94,6 +94,7 @@
 volatile ServoXM4340 myServo;
 
 float goalCurrent;
+float goalPosition;
 
 float curPosition;
 float curCurrent;
@@ -102,6 +103,8 @@ int currentRecordFlag_PIP = 0;
 int currentRecordFlag_DIP = 0;
 int angleRecordFlag_PIP = 0;
 int angleRecordFlag_DIP = 0;
+
+int tareRecordFlag;
 
 float cur_Velocity_PIP;
 float cur_Velocity_DIP;
@@ -242,21 +245,55 @@ int main(void)
   filtered_cur_loadcell = 0;
   filtered_pre_loadcell = 0;
 
-  /* ---------------------------------------------------------------------------*/
-  /* ------------------ Torsion Spring Coefficient Measurement -----------------*/
-  /* ---------------------------------------------------------------------------*/
+  tareRecordFlag = 0;
+
+  /* ---------------------------------------------------------------------------------------*/
+  /* ------------------ Torsion Spring Coefficient And Tension Measurement -----------------*/
+  /* ---------------------------------------------------------------------------------------*/
 
   HAL_Delay(1000);
 
+  // Loadcell Tare
+  // ------------------------------------------------------------------ //
+  // Loadcell Init
+  if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
+  {
+    cur_loadcell = HAL_ADC_GetValue(&hadc1);
+  }
+  filtered_cur_loadcell = cur_loadcell;
+
+  uint32_t startTick0 = HAL_GetTick();
+  tareRecordFlag = 1;
+  while (HAL_GetTick() - startTick0 < 3000)
+  {
+    // Read Loadcell
+    pre_loadcell = cur_loadcell;
+    filtered_pre_loadcell = filtered_cur_loadcell;
+    if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
+    {
+      cur_loadcell = HAL_ADC_GetValue(&hadc1);
+    }
+    // Low Pass Filter
+    filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell +
+                            (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
+  }
+  tareRecordFlag = 0;
+
+  HAL_Delay(200);
+
+  // ------------------Servo Setting ------------------- //
+
   setServo_OperatingMode(&myServo, Current_CtrlMode);
-  getServo_CurrentLimit(&myServo);
   // setServo_OperatingMode(&myServo, CurrentBased_POS_CtrlMode);
+  getServo_CurrentLimit(&myServo);
   getServo_OperatingMode(&myServo);
   setServo_TorqueENA(&myServo, TORQUE_ENABLE);
+  // setServo_TorqueENA(&myServo, TORQUE_DISABLE);
 
-  // HAL_Delay(2000);
+  // ------------------ Parameter Test Part ------------------- //
+  // // Check currentCmd_Start, currentCmd_MAX, servoReleaseCurCmd, servoWindingMin, servoWindingMax
   // goalCurrent = 0;
-  // goalPosition = 320;
+  // goalPosition = 0;
 
   // while (1)
   // {
@@ -266,30 +303,30 @@ int main(void)
   //   getJointAngle();
   //   curPosition = getServo_PresentPosition(&myServo);
   //   curCurrent = getServo_PresentCurrent(&myServo);
-  //   curVelocity = getServo_PresentVelocity(&myServo);
 
   //   HAL_GPIO_TogglePin(GPIOD, LD3_Pin);
   // }
 
   // ------------------ Manual Modified Needed ------------------- //
+  int servo_dir = -1;
+
   float jointDiffThreshold = 0.5; // deg
 
   // Attention for currentCmd_MAX Selection
   // The PIP/DIP joint limtation should be notice.
-  float currentCmd_Start = 40; // mA
-  float currentCmd_MAX = 170;  // mA
-  float currentCmd_Step = 10;  // mA
+  float currentCmd_Start = servo_dir * 40; // mA
+  float currentCmd_MAX = servo_dir * 170;  // mA
+  float currentCmd_Step = servo_dir * 10;  // mA
 
-  float delataCur = 3;           // mA
-  uint32_t steadyInterval = 200; // ms
-  float alphaJointFilter = 0.8;
+  float delataCur = servo_dir * 3; // mA
+  uint32_t steadyInterval = 200;   // ms
+  float alphaVelocityFilter = 0.8;
   float jointVelocityThreshold = 1; // rpm
 
-  float servoWindingMin = 320;   // WindingMin means the angle of servo when the tendon finger is in the maxima Flexion position
-  float servoWindingMax = 510;   // WindingMax means the angle of servo when the tendon finger is in the Extension position
-  float servoReleaseCurCmd = -4; // mA
+  float servoWindingMin = 334;               // WindingMin means the angle of servo when the tendon finger is in the maxima Flexion position
+  float servoWindingMax = 102;               // WindingMax means the angle of servo when the tendon finger is in the Extension position
+  float servoReleaseCurCmd = -servo_dir * 5; // mA
 
-  // ------------------------------------------------------------ //
   // ------------------ Manual Modified State ------------------- //
   // state = 1 for Flexion Measurement
   // state = 2 for Extehnsion Measurement
@@ -302,7 +339,7 @@ int main(void)
   float pre_Velocity_DIP;
   float preF_Velocity_PIP;
   float preF_Velocity_DIP;
-  for (float currentCmd = currentCmd_Start; currentCmd <= currentCmd_MAX; currentCmd += currentCmd_Step)
+  for (float currentCmd = currentCmd_Start; servo_dir * currentCmd <= servo_dir * currentCmd_MAX; currentCmd += currentCmd_Step)
   {
     goalCurrent = currentCmd;
     setServo_GoalCurrent(&myServo, goalCurrent);
@@ -376,6 +413,7 @@ int main(void)
       curF_Velocity_PIP = 0;
       curF_Velocity_DIP = 0;
 
+      // Loadcell Init
       if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
       {
         cur_loadcell = HAL_ADC_GetValue(&hadc1);
@@ -395,8 +433,8 @@ int main(void)
           cur_Velocity_DIP = ((comp_AngAS5048A_DIP - pre_comp_AngAS5048A_DIP) / dt) * 1000 / 6; // deg/ms to rpm
         }
         // Velocity Low Pass Filter
-        curF_Velocity_PIP = alphaJointFilter * preF_Velocity_PIP + (1 - alphaJointFilter) * (cur_Velocity_PIP + pre_Velocity_PIP) / 2;
-        curF_Velocity_DIP = alphaJointFilter * preF_Velocity_DIP + (1 - alphaJointFilter) * (cur_Velocity_DIP + pre_Velocity_DIP) / 2;
+        curF_Velocity_PIP = alphaVelocityFilter * preF_Velocity_PIP + (1 - alphaVelocityFilter) * (cur_Velocity_PIP + pre_Velocity_PIP) / 2;
+        curF_Velocity_DIP = alphaVelocityFilter * preF_Velocity_DIP + (1 - alphaVelocityFilter) * (cur_Velocity_DIP + pre_Velocity_DIP) / 2;
         pre_Velocity_PIP = cur_Velocity_PIP;
         pre_Velocity_DIP = cur_Velocity_DIP;
         preF_Velocity_PIP = curF_Velocity_PIP;
@@ -422,7 +460,8 @@ int main(void)
           cur_loadcell = HAL_ADC_GetValue(&hadc1);
         }
         // Low Pass Filter
-        filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell + (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
+        filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell +
+                                (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
 
         if (fabs(curF_Velocity_PIP) > jointVelocityThreshold && !isMoving_PIP)
         {
