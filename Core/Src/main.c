@@ -101,8 +101,8 @@ float curPosition;
 float curCurrent;
 float curVelocity;
 
-int currentRecordFlag_PIP = 0;
-int currentRecordFlag_DIP = 0;
+int tensionRecordFlag_PIP = 0;
+int tensionRecordFlag_DIP = 0;
 int angleRecordFlag_PIP = 0;
 int angleRecordFlag_DIP = 0;
 
@@ -158,6 +158,9 @@ void SystemClock_Config(void);
 void getJointAngle(void);
 float compErrCalculate(float angle, float c3, float c2, float c1, float c0);
 int alignAS5048A(int type, int angClkAS5048A, int extLim);
+
+void getLoadCell(void);
+void loadCellInit(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -257,27 +260,13 @@ int main(void)
 
   // Loadcell Tare
   // ------------------------------------------------------------------ //
-  // Loadcell Init
-  if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
-  {
-    cur_loadcell = HAL_ADC_GetValue(&hadc1);
-  }
-  filtered_cur_loadcell = cur_loadcell;
+  loadCellInit();
 
   uint32_t startTick0 = HAL_GetTick();
   tareRecordFlag = 1;
   while (HAL_GetTick() - startTick0 < 3000)
   {
-    // Read Loadcell
-    pre_loadcell = cur_loadcell;
-    filtered_pre_loadcell = filtered_cur_loadcell;
-    if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
-    {
-      cur_loadcell = HAL_ADC_GetValue(&hadc1);
-    }
-    // Low Pass Filter
-    filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell +
-                            (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
+    getLoadCell();
   }
   tareRecordFlag = 0;
 
@@ -285,25 +274,25 @@ int main(void)
 
   // ------------------Servo Setting ------------------- //
 
-  setServo_OperatingMode(&myServo, Current_CtrlMode);
+  // setServo_OperatingMode(&myServo, Current_CtrlMode);
   // setServo_OperatingMode(&myServo, CurrentBased_POS_CtrlMode);
-  // setServo_OperatingMode(&myServo, Velocity_CtrlMode);
+  setServo_OperatingMode(&myServo, Velocity_CtrlMode);
   getServo_CurrentLimit(&myServo);
   getServo_OperatingMode(&myServo);
   setServo_TorqueENA(&myServo, TORQUE_ENABLE);
   // setServo_TorqueENA(&myServo, TORQUE_DISABLE);
 
   // ------------------ Parameter Test Part ------------------- //
-  // // Check currentCmd_Start, currentCmd_MAX, servoReleaseCurCmd, servoWindingMin, servoWindingMax
+  // // Check posCmd_Start, posCmd_MAX, servoReleaseCurCmd, servoWindingMin, servoWindingMax
   // goalCurrent = 500;
-  // goalPosition = 334;
+  // goalPosition = 340;
   // goalVelocity = -0.25; // rpm
 
   // while (1)
   // {
   //   // setServo_GoalCurrent(&myServo, goalCurrent);
-  //   // setServo_GoalPosition(&myServo, goalPosition);
-  //   setServo_GoalVelocity(&myServo, goalVelocity);
+  //   setServo_GoalPosition(&myServo, goalPosition);
+  //   // setServo_GoalVelocity(&myServo, goalVelocity);
 
   //   getJointAngle();
   //   curPosition = getServo_PresentPosition(&myServo);
@@ -327,27 +316,33 @@ int main(void)
   // ------------------ Manual Modified Needed ------------------- //
   int servo_dir = -1;
 
-  float jointDiffThreshold = 0.5; // deg
-
-  // Attention for currentCmd_MAX Selection
+  // Attention for posCmd_MAX Selection
   // The PIP/DIP joint limtation should be notice.
-  float currentCmd_Start = servo_dir * 40; // mA
-  float currentCmd_MAX = servo_dir * 170;  // mA
-  float currentCmd_Step = servo_dir * 10;  // mA
+  // float posCmd_Start = servo_dir * 40; // mA
+  // float posCmd_MAX = servo_dir * 170;  // mA
+  // float posCmd_Step = servo_dir * 10;  // mA
 
-  float delataCur = servo_dir * 3; // mA
-  uint32_t steadyInterval = 200;   // ms
-  float alphaVelocityFilter = 0.8;
-  float jointVelocityThreshold = 1; // rpm
+  // float delataCur = servo_dir * 3; // mA
+  uint32_t steadyInterval = 200; // ms
+  float alphaVelocityFilter = 0.99;
+  float jointVelocityThreshold = 0.05; // rpm
 
-  float servoWindingMin = 334;               // WindingMin means the angle of servo when the tendon finger is in the maxima Flexion position
-  float servoWindingMax = 102;               // WindingMax means the angle of servo when the tendon finger is in the Extension position
-  float servoReleaseCurCmd = -servo_dir * 5; // mA
+  float servoWindingMin = 340; // WindingMin means the angle of servo when the tendon finger is in the maximum Flexion position
+  float servoWindingMax = 82;  // WindingMax means the angle of servo when the tendon finger is in the Extension position
+
+  float posCmd_Start = 165;
+  float posCmd_End = servoWindingMax;
+  float posCmd_Step = servo_dir * 8;
+
+  float servoDiffThreshold = 2; // deg
+
+  float servoReleaseVelCmd = -servo_dir * 8;        // rpm
+  float servoWindingVelCmd_Slow = servo_dir * 0.25; // rpm
+  float servoWindingVelCmd_Fast = servo_dir * 8;    // rpm
 
   // ------------------ Manual Modified State ------------------- //
   // state = 1 for Flexion Measurement
-  // state = 2 for Extehnsion Measurement
-  // int state = 1;
+  // state = -1 for Extehnsion Measurement
   int state = 1;
 
   float pre_comp_AngAS5048A_PIP;
@@ -356,10 +351,10 @@ int main(void)
   float pre_Velocity_DIP;
   float preF_Velocity_PIP;
   float preF_Velocity_DIP;
-  for (float currentCmd = currentCmd_Start; servo_dir * currentCmd <= servo_dir * currentCmd_MAX; currentCmd += currentCmd_Step)
+  for (float posCmd = posCmd_Start; servo_dir * posCmd <= servo_dir * posCmd_End; posCmd += posCmd_Step)
   {
-    goalCurrent = currentCmd;
-    setServo_GoalCurrent(&myServo, goalCurrent);
+    goalVelocity = servoWindingVelCmd_Fast;
+    setServo_GoalVelocity(&myServo, goalVelocity);
 
     // Joint Stable Detection
     // ------------------------------------------------------------------ //
@@ -376,14 +371,19 @@ int main(void)
     while (!isStable)
     {
       getJointAngle();
-      curCurrent = getServo_PresentCurrent(&myServo);
-      if (fabs(comp_AngAS5048A_PIP - pre_comp_AngAS5048A_PIP) < jointDiffThreshold && fabs(comp_AngAS5048A_DIP - pre_comp_AngAS5048A_DIP) < jointDiffThreshold)
+      getLoadCell();
+      curPosition = getServo_PresentPosition(&myServo);
+
+      if (fabs(curPosition - posCmd) < servoDiffThreshold)
       {
-        if (HAL_GetTick() - startTick1 >= 5000)
+        goalVelocity = 0; // stop the servo
+        setServo_GoalVelocity(&myServo, goalVelocity);
+        if (HAL_GetTick() - startTick1 >= 3000)
         {
           isStable = 1;
           angleRecordFlag_PIP = 1;
           angleRecordFlag_DIP = 1;
+          HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
         }
       }
       else
@@ -396,136 +396,107 @@ int main(void)
     while (HAL_GetTick() - startTick1 < 1000)
     {
       getJointAngle();
-      curCurrent = getServo_PresentCurrent(&myServo);
+      getLoadCell();
     }
     angleRecordFlag_PIP = 0;
     angleRecordFlag_DIP = 0;
-
-    HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
 
     // Main Experiment
     // ------------------------------------------------------------------ //
     int isMoving_PIP = 0;
     int isMoving_DIP = 0;
-    for (goalCurrent = currentCmd; !isMoving_PIP || !isMoving_DIP; goalCurrent += (state == 1 ? delataCur : -delataCur))
-    {
 
+    tensionRecordFlag_PIP = 0;
+    tensionRecordFlag_DIP = 0;
+
+    uint32_t startTime_PWM_Sampling;
+    getJointAngle();
+    getLoadCell();
+
+    pre_comp_AngAS5048A_PIP = comp_AngAS5048A_PIP;
+    pre_comp_AngAS5048A_DIP = comp_AngAS5048A_DIP;
+
+    pre_Velocity_PIP = 0;
+    pre_Velocity_DIP = 0;
+    preF_Velocity_PIP = 0;
+    preF_Velocity_DIP = 0;
+    cur_Velocity_PIP = 0;
+    cur_Velocity_DIP = 0;
+    curF_Velocity_PIP = 0;
+    curF_Velocity_DIP = 0;
+
+    goalVelocity = state * servoWindingVelCmd_Slow;
+    setServo_GoalVelocity(&myServo, goalVelocity);
+
+    while (!isMoving_PIP || !isMoving_DIP)
+    // while (1)
+    {
       HAL_GPIO_TogglePin(GPIOD, LD5_Pin);
 
-      uint32_t startTime = HAL_GetTick();
-      uint32_t startTime_PWM_Sampling;
-      currentRecordFlag_PIP = 0;
-      currentRecordFlag_DIP = 0;
-
+      uint32_t startTick2 = HAL_GetTick();
       getJointAngle();
+
+      // Get Joint Velocity
+      uint32_t dt = HAL_GetTick() - startTime_PWM_Sampling;
+      if (dt > 0)
+      {
+        cur_Velocity_PIP = ((comp_AngAS5048A_PIP - pre_comp_AngAS5048A_PIP) / dt) * 1000 / 6; // deg/ms to rpm
+        cur_Velocity_DIP = ((comp_AngAS5048A_DIP - pre_comp_AngAS5048A_DIP) / dt) * 1000 / 6; // deg/ms to rpm
+      }
+      // Velocity Low Pass Filter
+      curF_Velocity_PIP = alphaVelocityFilter * preF_Velocity_PIP + (1 - alphaVelocityFilter) * (cur_Velocity_PIP + pre_Velocity_PIP) / 2;
+      curF_Velocity_DIP = alphaVelocityFilter * preF_Velocity_DIP + (1 - alphaVelocityFilter) * (cur_Velocity_DIP + pre_Velocity_DIP) / 2;
+      pre_Velocity_PIP = cur_Velocity_PIP;
+      pre_Velocity_DIP = cur_Velocity_DIP;
+      preF_Velocity_PIP = curF_Velocity_PIP;
+      preF_Velocity_DIP = curF_Velocity_DIP;
+
       pre_comp_AngAS5048A_PIP = comp_AngAS5048A_PIP;
       pre_comp_AngAS5048A_DIP = comp_AngAS5048A_DIP;
 
-      pre_Velocity_PIP = 0;
-      pre_Velocity_DIP = 0;
-      preF_Velocity_PIP = 0;
-      preF_Velocity_DIP = 0;
-      cur_Velocity_PIP = 0;
-      cur_Velocity_DIP = 0;
-      curF_Velocity_PIP = 0;
-      curF_Velocity_DIP = 0;
+      // Record the time when getJointAngle() run
+      startTime_PWM_Sampling = startTick2;
 
-      // Loadcell Init
-      if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
+      // Read Loadcell
+      getLoadCell();
+
+      if (fabs(curF_Velocity_PIP) > jointVelocityThreshold && !isMoving_PIP)
       {
-        cur_loadcell = HAL_ADC_GetValue(&hadc1);
+        isMoving_PIP = 1;
+        tensionRecordFlag_PIP = 1;
       }
-      filtered_cur_loadcell = cur_loadcell;
 
-      while ((!isMoving_PIP || !isMoving_DIP) && (HAL_GetTick() - startTime < steadyInterval))
+      if (fabs(curF_Velocity_DIP) > jointVelocityThreshold && !isMoving_DIP)
       {
-        uint32_t startTick2 = HAL_GetTick();
-        getJointAngle();
-
-        // Get Joint Velocity
-        uint32_t dt = HAL_GetTick() - startTime_PWM_Sampling;
-        if (dt > 0)
-        {
-          cur_Velocity_PIP = ((comp_AngAS5048A_PIP - pre_comp_AngAS5048A_PIP) / dt) * 1000 / 6; // deg/ms to rpm
-          cur_Velocity_DIP = ((comp_AngAS5048A_DIP - pre_comp_AngAS5048A_DIP) / dt) * 1000 / 6; // deg/ms to rpm
-        }
-        // Velocity Low Pass Filter
-        curF_Velocity_PIP = alphaVelocityFilter * preF_Velocity_PIP + (1 - alphaVelocityFilter) * (cur_Velocity_PIP + pre_Velocity_PIP) / 2;
-        curF_Velocity_DIP = alphaVelocityFilter * preF_Velocity_DIP + (1 - alphaVelocityFilter) * (cur_Velocity_DIP + pre_Velocity_DIP) / 2;
-        pre_Velocity_PIP = cur_Velocity_PIP;
-        pre_Velocity_DIP = cur_Velocity_DIP;
-        preF_Velocity_PIP = curF_Velocity_PIP;
-        preF_Velocity_DIP = curF_Velocity_DIP;
-
-        pre_comp_AngAS5048A_PIP = comp_AngAS5048A_PIP;
-        pre_comp_AngAS5048A_DIP = comp_AngAS5048A_DIP;
-
-        // Record the time when getJointAngle() run
-        startTime_PWM_Sampling = startTick2;
-
-        // Current command
-        setServo_GoalCurrent(&myServo, goalCurrent);
-
-        // Read Current and Loadcell
-        curCurrent = getServo_PresentCurrent(&myServo);
-
-        // Read Loadcell
-        pre_loadcell = cur_loadcell;
-        filtered_pre_loadcell = filtered_cur_loadcell;
-        if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
-        {
-          cur_loadcell = HAL_ADC_GetValue(&hadc1);
-        }
-        // Low Pass Filter
-        filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell +
-                                (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
-
-        if (fabs(curF_Velocity_PIP) > jointVelocityThreshold && !isMoving_PIP)
-        {
-          isMoving_PIP = 1;
-          currentRecordFlag_PIP = 1;
-          startTime = HAL_GetTick();
-        }
-
-        if (fabs(curF_Velocity_DIP) > jointVelocityThreshold && !isMoving_DIP)
-        {
-          isMoving_DIP = 1;
-          currentRecordFlag_DIP = 1;
-          startTime = HAL_GetTick();
-        }
+        isMoving_DIP = 1;
+        tensionRecordFlag_DIP = 1;
       }
+
+      HAL_Delay(5);
     }
 
     uint32_t startTick3 = HAL_GetTick();
     while (HAL_GetTick() - startTick3 < steadyInterval)
     {
       getJointAngle();
-      curCurrent = getServo_PresentCurrent(&myServo);
-
-      // Read Loadcell
-      pre_loadcell = cur_loadcell;
-      filtered_pre_loadcell = filtered_cur_loadcell;
-      if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
-      {
-        cur_loadcell = HAL_ADC_GetValue(&hadc1);
-      }
-      // Low Pass Filter
-      filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell + (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
+      getLoadCell();
     }
-    currentRecordFlag_PIP = 0;
-    currentRecordFlag_DIP = 0;
+    tensionRecordFlag_PIP = 0;
+    tensionRecordFlag_DIP = 0;
 
     HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
 
     // Release tendon
-    curPosition = getServo_PresentPosition(&myServo);
+    goalVelocity = servoReleaseVelCmd;
+    setServo_GoalVelocity(&myServo, goalVelocity);
     while ((servoWindingMax - servoWindingMin) * (servoWindingMin - curPosition) <= 0)
     {
       getJointAngle();
-      setServo_GoalCurrent(&myServo, servoReleaseCurCmd);
+      getLoadCell();
       curPosition = getServo_PresentPosition(&myServo);
     }
-    setServo_GoalCurrent(&myServo, 0);
+    goalVelocity = 0;
+    setServo_GoalVelocity(&myServo, goalVelocity);
   }
 
   /* ---------------------------------------------------------------------------*/
@@ -591,6 +562,32 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void loadCellInit(void)
+{
+  // Read Loadcell
+  if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
+  {
+    cur_loadcell = HAL_ADC_GetValue(&hadc1);
+  }
+  pre_loadcell = cur_loadcell;
+  filtered_cur_loadcell = cur_loadcell;
+  filtered_pre_loadcell = filtered_cur_loadcell;
+}
+
+void getLoadCell(void)
+{
+  // Read Loadcell
+  if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
+  {
+    cur_loadcell = HAL_ADC_GetValue(&hadc1);
+  }
+  // Low Pass Filter
+  filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell +
+                          (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
+  pre_loadcell = cur_loadcell;
+  filtered_pre_loadcell = filtered_cur_loadcell;
+}
+
 void getJointAngle(void)
 {
   // getAngClkAS5048A(); // original clk
