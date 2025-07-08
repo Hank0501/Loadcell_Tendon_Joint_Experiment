@@ -95,9 +95,11 @@ volatile ServoXM4340 myServo;
 
 float goalCurrent;
 float goalPosition;
+float goalVelocity;
 
 float curPosition;
 float curCurrent;
+float curVelocity;
 
 int currentRecordFlag_PIP = 0;
 int currentRecordFlag_DIP = 0;
@@ -285,6 +287,7 @@ int main(void)
 
   setServo_OperatingMode(&myServo, Current_CtrlMode);
   // setServo_OperatingMode(&myServo, CurrentBased_POS_CtrlMode);
+  // setServo_OperatingMode(&myServo, Velocity_CtrlMode);
   getServo_CurrentLimit(&myServo);
   getServo_OperatingMode(&myServo);
   setServo_TorqueENA(&myServo, TORQUE_ENABLE);
@@ -292,17 +295,31 @@ int main(void)
 
   // ------------------ Parameter Test Part ------------------- //
   // // Check currentCmd_Start, currentCmd_MAX, servoReleaseCurCmd, servoWindingMin, servoWindingMax
-  // goalCurrent = 0;
-  // goalPosition = 0;
+  // goalCurrent = 500;
+  // goalPosition = 334;
+  // goalVelocity = -0.25; // rpm
 
   // while (1)
   // {
-  //   setServo_GoalCurrent(&myServo, goalCurrent);
+  //   // setServo_GoalCurrent(&myServo, goalCurrent);
   //   // setServo_GoalPosition(&myServo, goalPosition);
+  //   setServo_GoalVelocity(&myServo, goalVelocity);
 
   //   getJointAngle();
   //   curPosition = getServo_PresentPosition(&myServo);
   //   curCurrent = getServo_PresentCurrent(&myServo);
+  //   curVelocity = getServo_PresentVelocity(&myServo);
+
+  //   // Read Loadcell
+  //   pre_loadcell = cur_loadcell;
+  //   filtered_pre_loadcell = filtered_cur_loadcell;
+  //   if (HAL_ADC_PollForConversion(&hadc1, 2) == HAL_OK)
+  //   {
+  //     cur_loadcell = HAL_ADC_GetValue(&hadc1);
+  //   }
+  //   // Low Pass Filter
+  //   filtered_cur_loadcell = ALPHA_LOADCELL * filtered_pre_loadcell +
+  //                           (1 - ALPHA_LOADCELL) * ((float)cur_loadcell + (float)pre_loadcell) / 2;
 
   //   HAL_GPIO_TogglePin(GPIOD, LD3_Pin);
   // }
