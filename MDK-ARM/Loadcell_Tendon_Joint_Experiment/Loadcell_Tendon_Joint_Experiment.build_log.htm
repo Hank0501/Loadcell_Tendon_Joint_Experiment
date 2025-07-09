@@ -27,7 +27,21 @@ Project File Date:  07/08/2025
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Loadcell_Tendon_Joint_Experiment'
-"Loadcell_Tendon_Joint_Experiment\Loadcell_Tendon_Joint_Experiment.axf" - 0 Error(s), 0 Warning(s).
+../Core/Src/main.c(123): warning: '/*' within block comment [-Wcomment]
+/* deg 0 to deg max -----------*/
+^
+../Core/Src/main.c(131): warning: '/*' within block comment [-Wcomment]
+/* 0 to max -----------*/
+^
+../Core/Src/main.c(681): warning: non-void function does not return a value in all control paths [-Wreturn-type]
+}
+^
+3 warnings generated.
+compiling main.c...
+linking...
+Program Size: Code=28558 RO-data=970 RW-data=12 ZI-data=2484  
+FromELF: creating hex file...
+"Loadcell_Tendon_Joint_Experiment\Loadcell_Tendon_Joint_Experiment.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +64,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

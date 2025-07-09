@@ -343,7 +343,7 @@ int main(void)
   // ------------------ Manual Modified State ------------------- //
   // state = 1 for Flexion Measurement
   // state = -1 for Extehnsion Measurement
-  int state = 1;
+  int state = -1;
 
   float pre_comp_AngAS5048A_PIP;
   float pre_comp_AngAS5048A_DIP;
@@ -460,6 +460,8 @@ int main(void)
       // Read Loadcell
       getLoadCell();
 
+      curPosition = getServo_PresentPosition(&myServo);
+
       if (fabs(curF_Velocity_PIP) > jointVelocityThreshold && !isMoving_PIP)
       {
         isMoving_PIP = 1;
@@ -480,6 +482,7 @@ int main(void)
     {
       getJointAngle();
       getLoadCell();
+      curPosition = getServo_PresentPosition(&myServo);
     }
     tensionRecordFlag_PIP = 0;
     tensionRecordFlag_DIP = 0;
