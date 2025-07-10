@@ -208,6 +208,15 @@ for i = 1:dataCount_Extension
 
 end
 
+% Tare Procressing
+% ---------------------------------------------------------%
+for i = 1:10
+    instantTension_PIP_Flexion{i} = instantTension_PIP_Flexion{i} - avgTare_Flexion{i};
+    instantTension_DIP_Flexion{i} = instantTension_DIP_Flexion{i} - avgTare_Flexion{i};
+    instantTension_PIP_Extension{i} = instantTension_PIP_Extension{i} - avgTare_Extension{i};
+    instantTension_DIP_Extension{i} = instantTension_DIP_Extension{i} - avgTare_Extension{i};
+end
+
 % ---------------------------------------------------------%
 % ---------------------------------------------------------%
 figure(1);
@@ -395,8 +404,6 @@ grid on;
 % ---------------------------------------------------------%
 % ---------------------------------------------------------%
 
-tare = mean(tareList);
-
 % Get from the Calibration Experiment
 % Loadcell Value to Force (N)
 loadcell_gain = 100;
@@ -418,8 +425,8 @@ for i = 1:dataCount_Flexion
 end
 
 for i = 1:dataCount_Extension
-    instantTorque_PIP_Extension{i} =instantTension_PIP_Extension{i};
-    instantTorque_DIP_Extension{i} =instantTension_DIP_Extension{i};
+    instantTorque_PIP_Extension{i} = instantTension_PIP_Extension{i};
+    instantTorque_DIP_Extension{i} = instantTension_DIP_Extension{i};
 end
 
 % Concatenate arrays
