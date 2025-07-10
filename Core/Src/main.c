@@ -256,7 +256,7 @@ int main(void)
   /* ------------------ Torsion Spring Coefficient And Tension Measurement -----------------*/
   /* ---------------------------------------------------------------------------------------*/
 
-  HAL_Delay(1000);
+  HAL_Delay(3000);
 
   // Loadcell Tare
   // ------------------------------------------------------------------ //
@@ -264,7 +264,8 @@ int main(void)
 
   uint32_t startTick0 = HAL_GetTick();
   tareRecordFlag = 1;
-  while (HAL_GetTick() - startTick0 < 3000)
+  // while (HAL_GetTick() - startTick0 < 3000)
+  while (1)
   {
     getLoadCell();
   }
