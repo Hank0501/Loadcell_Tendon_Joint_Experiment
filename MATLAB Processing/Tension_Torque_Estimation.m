@@ -232,12 +232,12 @@ ylabel('Loadcell\_Value or Angle (deg)');
 yyaxis right;
 plot(time_Flexion{1}, curF_Velocity_PIP_Flexion{1}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 plot(time_Flexion{1}, curF_Velocity_DIP_Flexion{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Flexion{1}, goalVelocity_Flexion{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Flexion{1}, tareRecordFlag_Flexion{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Flexion{1}, tensionRecordFlag_PIP_Flexion{1}, 'Color', '#4DBEEE', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Flexion{1}, tensionRecordFlag_DIP_Flexion{1}, 'Color', '#D95319', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Flexion{1}, angleRecordFlag_PIP_Flexion{1}, 'Color', '#0072BD', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Flexion{1}, angleRecordFlag_DIP_Flexion{1}, 'Color', '#FF00FF', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Flexion{1}, goalVelocity_Flexion{1}, 'Color', '#4DBEEE', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Flexion{1}, tareRecordFlag_Flexion{1}, 'Color', '#D95319', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Flexion{1}, tensionRecordFlag_PIP_Flexion{1}, 'Color', '#0072BD', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Flexion{1}, tensionRecordFlag_DIP_Flexion{1}, 'Color', '#FF00FF', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Flexion{1}, angleRecordFlag_PIP_Flexion{1}, 'Color', 'k', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Flexion{1}, angleRecordFlag_DIP_Flexion{1}, 'Color', 'g', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 ylabel('Velocity (rpm)');
 
 leg1 = legend({'curPosition', 'filtered\_cur\_loadcell', 'comp\_AngAS5048A\_PIP', 'comp\_AngAS5048A\_DIP', ...
@@ -246,7 +246,7 @@ leg1 = legend({'curPosition', 'filtered\_cur\_loadcell', 'comp\_AngAS5048A\_PIP'
 leg1.FontSize = 18;
 hold off;
 xlabel('time (ms)');
-title('Tension and Torque Spring Experiment');
+title('Tension and Torque Spring Experiment - Flexion');
 set(gca, 'FontSize', 25);
 grid on;
 
@@ -265,12 +265,12 @@ ylabel('Loadcell\_Value or Angle (deg)');
 yyaxis right;
 plot(time_Extension{1}, curF_Velocity_PIP_Extension{1}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 plot(time_Extension{1}, curF_Velocity_DIP_Extension{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Extension{1}, goalVelocity_Extension{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Extension{1}, tareRecordFlag_Extension{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Extension{1}, tensionRecordFlag_PIP_Extension{1}, 'Color', '#4DBEEE', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Extension{1}, tensionRecordFlag_DIP_Extension{1}, 'Color', '#D95319', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Extension{1}, angleRecordFlag_PIP_Extension{1}, 'Color', '#0072BD', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-plot(time_Extension{1}, angleRecordFlag_DIP_Extension{1}, 'Color', '#FF00FF', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Extension{1}, goalVelocity_Extension{1}, 'Color', '#4DBEEE', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Extension{1}, tareRecordFlag_Extension{1}, 'Color', '#D95319', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Extension{1}, tensionRecordFlag_PIP_Extension{1}, 'Color', '#0072BD', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Extension{1}, tensionRecordFlag_DIP_Extension{1}, 'Color', '#FF00FF', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Extension{1}, angleRecordFlag_PIP_Extension{1}, 'Color', 'k', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(time_Extension{1}, angleRecordFlag_DIP_Extension{1}, 'Color', 'g', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 ylabel('Velocity (rpm)');
 
 leg2 = legend({'curPosition', 'filtered\_cur\_loadcell', 'comp\_AngAS5048A\_PIP', 'comp\_AngAS5048A\_DIP', ...
@@ -279,7 +279,7 @@ leg2 = legend({'curPosition', 'filtered\_cur\_loadcell', 'comp\_AngAS5048A\_PIP'
 leg2.FontSize = 18;
 hold off;
 xlabel('time (ms)');
-title('Tension and Torque Spring Experiment');
+title('Tension and Torque Spring Experiment - Extension');
 set(gca, 'FontSize', 25);
 grid on;
 
@@ -420,13 +420,13 @@ instantTorque_PIP_Extension = cell(1, dataCount_Extension);
 instantTorque_DIP_Extension = cell(1, dataCount_Extension);
 
 for i = 1:dataCount_Flexion
-    instantTorque_PIP_Flexion{i} = instantTension_PIP_Flexion{i};
-    instantTorque_DIP_Flexion{i} = instantTension_PIP_Flexion{i};
+    instantTorque_PIP_Flexion{i} = instantTension_PIP_Flexion{i} * loadcell_gain * r_pulley / 2;
+    instantTorque_DIP_Flexion{i} = instantTension_PIP_Flexion{i} * loadcell_gain * r_pulley / 2;
 end
 
 for i = 1:dataCount_Extension
-    instantTorque_PIP_Extension{i} = instantTension_PIP_Extension{i};
-    instantTorque_DIP_Extension{i} = instantTension_DIP_Extension{i};
+    instantTorque_PIP_Extension{i} = instantTension_PIP_Extension{i} * loadcell_gain * r_pulley / 2;
+    instantTorque_DIP_Extension{i} = instantTension_DIP_Extension{i} * loadcell_gain * r_pulley / 2;
 end
 
 % Concatenate arrays
@@ -466,78 +466,78 @@ fitDIP_Flexion = polyval(coeffsDIP_Flexion, DIP_x);
 fitPIP_Extension = polyval(coeffsPIP_Extension, PIP_x);
 fitDIP_Extension = polyval(coeffsDIP_Extension, DIP_x);
 
-% % ---------------------------------------------------------%
-% % ---------------------------------------------------------%
-% figure(7);
-% hold on;
+% ---------------------------------------------------------%
+% ---------------------------------------------------------%
+figure(8);
+hold on;
 
-% plot(avgAngle_PIP_Flexion{1}, instantTorque_PIP_Flexion{1}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{2}, instantTorque_PIP_Flexion{2}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{3}, instantTorque_PIP_Flexion{3}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{4}, instantTorque_PIP_Flexion{4}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{5}, instantTorque_PIP_Flexion{5}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{6}, instantTorque_PIP_Flexion{6}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{7}, instantTorque_PIP_Flexion{7}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{8}, instantTorque_PIP_Flexion{8}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{9}, instantTorque_PIP_Flexion{9}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Flexion{10}, instantTorque_PIP_Flexion{10}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(PIP_x, fitPIP_Flexion, 'Color', '#77AC30', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{1}, instantTorque_PIP_Flexion{1}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{2}, instantTorque_PIP_Flexion{2}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{3}, instantTorque_PIP_Flexion{3}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{4}, instantTorque_PIP_Flexion{4}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{5}, instantTorque_PIP_Flexion{5}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{6}, instantTorque_PIP_Flexion{6}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{7}, instantTorque_PIP_Flexion{7}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{8}, instantTorque_PIP_Flexion{8}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{9}, instantTorque_PIP_Flexion{9}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Flexion{10}, instantTorque_PIP_Flexion{10}, 'Color', 'r', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(PIP_x, fitPIP_Flexion, 'Color', '#77AC30', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 
-% plot(avgAngle_PIP_Extension{1}, instantTorque_PIP_Extension{1}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{2}, instantTorque_PIP_Extension{2}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{3}, instantTorque_PIP_Extension{3}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{4}, instantTorque_PIP_Extension{4}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{5}, instantTorque_PIP_Extension{5}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{6}, instantTorque_PIP_Extension{6}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{7}, instantTorque_PIP_Extension{7}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{8}, instantTorque_PIP_Extension{8}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{9}, instantTorque_PIP_Extension{9}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_PIP_Extension{10}, instantTorque_PIP_Extension{10}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(PIP_x, fitPIP_Extension, 'Color', '#EDB120', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{1}, instantTorque_PIP_Extension{1}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{2}, instantTorque_PIP_Extension{2}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{3}, instantTorque_PIP_Extension{3}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{4}, instantTorque_PIP_Extension{4}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{5}, instantTorque_PIP_Extension{5}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{6}, instantTorque_PIP_Extension{6}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{7}, instantTorque_PIP_Extension{7}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{8}, instantTorque_PIP_Extension{8}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{9}, instantTorque_PIP_Extension{9}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_PIP_Extension{10}, instantTorque_PIP_Extension{10}, 'Color', 'b', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(PIP_x, fitPIP_Extension, 'Color', '#EDB120', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 
-% % leg15 = legend({'err\_1st', 'err\_2nd', 'err\_3rd', 'err\_4th', 'err\_5th', 'err\_fit'}, 'Location', 'best');
-% % leg15.FontSize = 20;
-% hold off;
-% xlabel('AS5048A Angle (Degree)');
-% ylabel(' error (Degree)');
-% title('PIP Joint');
-% set(gca, 'FontSize', 25);
-% grid on;
+leg8 = legend({'PIP_Flexion', 'PIP_Flexion (Fit)', 'PIP_Extension', 'PIP_Extension (Fit)'}, 'Location', 'best');
+leg8.FontSize = 20;
+hold off;
+xlabel('AS5048A Angle (Degree)');
+ylabel('Torque (N-m)');
+title('PIP Joint');
+set(gca, 'FontSize', 25);
+grid on;
 
-% % ---------------------------------------------------------%
-% % ---------------------------------------------------------%
-% figure(7);
-% hold on;
+% ---------------------------------------------------------%
+% ---------------------------------------------------------%
+figure(9);
+hold on;
 
-% plot(avgAngle_DIP_Flexion{1}, instantTorque_DIP_Flexion{1}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{2}, instantTorque_DIP_Flexion{2}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{3}, instantTorque_DIP_Flexion{3}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{4}, instantTorque_DIP_Flexion{4}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{5}, instantTorque_DIP_Flexion{5}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{6}, instantTorque_DIP_Flexion{6}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{7}, instantTorque_DIP_Flexion{7}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{8}, instantTorque_DIP_Flexion{8}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{9}, instantTorque_DIP_Flexion{9}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Flexion{10}, instantTorque_DIP_Flexion{10}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(DIP_x, fitDIP_Flexion, 'Color', '#4DBEEE', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{1}, instantTorque_DIP_Flexion{1}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{2}, instantTorque_DIP_Flexion{2}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{3}, instantTorque_DIP_Flexion{3}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{4}, instantTorque_DIP_Flexion{4}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{5}, instantTorque_DIP_Flexion{5}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{6}, instantTorque_DIP_Flexion{6}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{7}, instantTorque_DIP_Flexion{7}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{8}, instantTorque_DIP_Flexion{8}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{9}, instantTorque_DIP_Flexion{9}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Flexion{10}, instantTorque_DIP_Flexion{10}, 'Color', '#7E2F8E', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(DIP_x, fitDIP_Flexion, 'Color', '#4DBEEE', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 
-% plot(avgAngle_DIP_Extension{1}, instantTorque_DIP_Extension{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{2}, instantTorque_DIP_Extension{2}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{3}, instantTorque_DIP_Extension{3}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{4}, instantTorque_DIP_Extension{4}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{5}, instantTorque_DIP_Extension{5}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{6}, instantTorque_DIP_Extension{6}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{7}, instantTorque_DIP_Extension{7}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{8}, instantTorque_DIP_Extension{8}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{9}, instantTorque_DIP_Extension{9}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(avgAngle_DIP_Extension{10}, instantTorque_DIP_Extension{10}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
-% plot(DIP_x, fitDIP_Extension, 'Color', '#FF00FF', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{1}, instantTorque_DIP_Extension{1}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{2}, instantTorque_DIP_Extension{2}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{3}, instantTorque_DIP_Extension{3}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{4}, instantTorque_DIP_Extension{4}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{5}, instantTorque_DIP_Extension{5}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{6}, instantTorque_DIP_Extension{6}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{7}, instantTorque_DIP_Extension{7}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{8}, instantTorque_DIP_Extension{8}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{9}, instantTorque_DIP_Extension{9}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(avgAngle_DIP_Extension{10}, instantTorque_DIP_Extension{10}, 'Color', '#A2142F', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
+plot(DIP_x, fitDIP_Extension, 'Color', '#FF00FF', 'LineWidth', 1.5, 'LineStyle', '-', 'Marker', '*');
 
-% % leg15 = legend({'err\_1st', 'err\_2nd', 'err\_3rd', 'err\_4th', 'err\_5th', 'err\_fit'}, 'Location', 'best');
-% % leg15.FontSize = 20;
-% hold off;
-% xlabel('AS5048A Angle (Degree)');
-% ylabel(' Torque (N-m)');
-% title('PIP & DIP Joint');
-% set(gca, 'FontSize', 25);
-% grid on;
+leg9 = legend({'DIP_Flexion', 'DIP_Flexion (Fit)', 'DIP_Extension', 'DIP_Extension (Fit)'}, 'Location', 'best');
+leg9.FontSize = 20;
+hold off;
+xlabel('AS5048A Angle (Degree)');
+ylabel('Torque (N-m)');
+title('DIP Joint');
+set(gca, 'FontSize', 25);
+grid on;
