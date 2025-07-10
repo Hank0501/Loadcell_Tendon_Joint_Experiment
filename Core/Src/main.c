@@ -264,8 +264,8 @@ int main(void)
 
   uint32_t startTick0 = HAL_GetTick();
   tareRecordFlag = 1;
-  // while (HAL_GetTick() - startTick0 < 3000)
-  while (1)
+  // while (1)
+  while (HAL_GetTick() - startTick0 < 3000)
   {
     getLoadCell();
   }
